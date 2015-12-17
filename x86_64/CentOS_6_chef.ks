@@ -136,17 +136,18 @@ ChefServerFlat="`echo ${ChefServer}|sed 's/\./_/g'`"
 yum -y --disablerepo=* install http://repo/repo/os/Linux/Software/Chef/chef-12.0.1-1.x86_64.rpm
 
 # Get all the relevent chef config files
+mkdir -p /etc/chef
 cd /etc/chef/
 wget -q http://repo/chef/client.rb
 wget -q http://repo/chef/validation.pem
-echo '{"run_list":["recipe[base]"]}' > /etc/chef/first-boot.json
+wget -q http://repo/chef/initial.json
 
 # Download the SSL certs
 mkdir -p /etc/chef/trusted_certs
 openssl s_client -showcerts -connect ${ChefServer}:443 </dev/null 2>/dev/null|openssl x509 -outform PEM > /etc/chef/trusted_certs/${ChefServerFlat}.crt
 
 # Run the inital chef client
-chef-client
+chef-client -j /etc/chef/initial.json --environment _default
 
 ) 2>&1 >/root/install-post-sh.log
 %end
