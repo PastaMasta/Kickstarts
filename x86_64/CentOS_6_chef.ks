@@ -138,9 +138,9 @@ yum -y --disablerepo=* install http://repo/repo/os/Linux/Software/Chef/chef-12.0
 # Get all the relevent chef config files
 mkdir -p /etc/chef
 cd /etc/chef/
-wget -q http://repo/chef/client.rb
-wget -q http://repo/chef/validation.pem
-wget -q http://repo/chef/initial.json
+wget -q http://repo/build/chef/client.rb
+wget -q http://repo/build/chef/validation.pem
+wget -q http://repo/build/chef/initial.json
 
 # Download the SSL certs
 mkdir -p /etc/chef/trusted_certs
