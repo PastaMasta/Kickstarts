@@ -20,7 +20,7 @@ timezone --utc Europe/London
 
 ### STORAGE ###
 
-%include /tmp/part-include
+%include /tmp/part-include # Generated in find-disks.sh
 
 volgroup rootvg --pesize=4096 pv.0
 logvol swap --name=lv_swap --vgname=rootvg --size=2048
@@ -29,7 +29,6 @@ logvol /tmp --fstype=ext4 --name=lv_tmp --vgname=rootvg --size=1024
 logvol /home --fstype=ext4 --name=lv_home --vgname=rootvg --size=128
 logvol /var --fstype=ext4 --name=lv_var --vgname=rootvg --size=1024
 logvol /var/log --fstype=ext4 --name=lv_log --vgname=rootvg --size=1024
-
 
 ### PACKAGES ###
 %packages
@@ -41,77 +40,24 @@ openssh-clients
 %end
 
 ### PRE-INSTALL ###
-%pre --logfile /root/install-pre.log
+%pre --interpreter /bin/bash --logfile /root/install-pre.log
 ###############################################################################
-#!/bin/bash
 
 # Move to other tty so we can display stuff
 exec < /dev/tty6 > /dev/tty6
 chvt 6
 clear
 
-# Find disks and prompt for which one to use.
+# Download and run all the misc scripts
+baseurl="repo.localdomain/build/kickstarts/scripts"
+mkdir /tmp/build
 
-devs="" ; devid=0
+wget ${baseurl}/set-hostname.sh -O /tmp/build/set-hostname.sh
+wget ${baseurl}/find-disks.sh -O /tmp/build/find-disks.sh
+chmod +x /tmp/build/*.sh
 
-for dev in /sys/block/sd* ; do
-  dev=`basename ${dev}`
-  devs="${devs} ${dev}"
-done
-
-if [[ `echo ${devs}|wc -w` -gt 1 ]] ; then
-  printf "More than one disk detected!\n\n"
-  printf "%s%6s%12s%33s\n" "DEVICE" "SIZE" "PATH" "MODEL"
-
-  for dev in ${devs} ; do
-    size=`fdisk -l /dev/${dev} | awk '/^Disk.*bytes/{print $3,$4} ' | sed -e 's/[:,]//g'`
-    path=`ls -l /dev/disk/by-path/ | awk "/${dev}/"'&&!/part/{print $9}'`
-    model=`cat /sys/block/${dev}/device/model`
-    printf "%s%12s%34s%19s\n" "${dev}" "${size}" "${path}" "${model}"
-  done
-
-  while true ; do
-    printf "\nPlease specify root disk: " ; read rootdisk
-    if ! echo ${devs} | grep -q ${rootdisk} ; then
-      printf "Invalid selection! Valid disks are: ${devs}"
-      continue
-    fi
-    printf "You have Chosen: ${rootdisk} is this correct (y/n)? " ; read reply1
-    case ${reply1} in
-      [Yy]* )
-        echo "clearpart --all --drives=/dev/${rootdisk}" >> /tmp/part-include
-        echo "part /boot --fstype=ext4 --size=128 --ondisk=/dev/${rootdisk}" >> /tmp/part-include
-        echo "part pv.0 --grow --size=1 --ondisk=/dev/${rootdisk}" >> /tmp/part-include
-        echo "bootloader --location=mbr --driveorder=/dev/${rootdisk} --append='crashkernel=auth rhgb rhgb quiet'" >> /tmp/part-include
-        break ;;
-      [Nn]* ) ;;
-      * ) echo "Please enter one of ${devs}" ;;
-    esac
-  done
-
-else
-  echo "clearpart --all --drives=/dev/sda" >> /tmp/part-include
-  echo "part /boot --fstype=ext4 --size=128 --ondisk=/dev/sda" >> /tmp/part-include
-  echo "part pv.0 --grow --size=1 --ondisk=/dev/sda" >> /tmp/part-include
-  echo "bootloader --location=mbr --driveorder=/dev/sda --append='crashkernel=auth rhgb rhgb quiet'" >> /tmp/part-include
-fi
-
-###############################################################################
-# Ask for system hostname
-
-while true ; do
-  printf "\nPlease enter the hostname for this machine: " ; read Hostname
-  printf "You have Chosen: ${Hostname} is this correct (y/n)? " ; read reply2
-  case ${reply2} in
-    [Yy]* ) hostname ${Hostname}
-      echo "NETWORKING=yes" >> /etc/sysconfig/network
-      echo "HOSTNAME=${Hostname}" >> /etc/sysconfig/network
-      echo "DHCP_HOSTNAME=${Hostname}" >> /etc/sysconfig/network-scripts/ifcfg-eth0
-      break ;;
-    [Nn]* ) ;;
-    * ) echo "Please enter (y/n)" ;;
-  esac
-done
+/tmp/build/set-hostname.sh
+/tmp/build/find-disks.sh
 
 # Go back to tty1
 exec < /dev/tty1 > /dev/tty1
@@ -123,13 +69,6 @@ chvt 1
 ### POST-INSTALL ###
 %post --logfile /root/install-post.log
 (
-
-# Setup repo
-cd /etc/yum.repos.d
-rm -f /etc/yum.repos.d/*
-wget http://repo/repo/Lab-Base.repo
-wget http://repo/repo/Lab-Stuff.repo
-wget http://repo/repo/Lab-epel.repo
 
 # Setup SSH key
 mkdir /root/.ssh
