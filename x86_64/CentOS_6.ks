@@ -1,7 +1,7 @@
 ### INSTALL ###
 text
 install
-url --url=http://repo/repo/os/Linux/CentOS/6/os/x86_64
+url --url=http://repo/os/CentOS/6/os/x86_64
 reboot
 
 ### SECURITY ###
@@ -49,7 +49,7 @@ chvt 6
 clear
 
 # Download and run all the misc scripts
-baseurl="repo.localdomain/build/kickstarts/scripts"
+baseurl="http://repo/build/kickstarts/scripts"
 mkdir /tmp/build
 
 wget ${baseurl}/set-hostname.sh -O /tmp/build/set-hostname.sh
