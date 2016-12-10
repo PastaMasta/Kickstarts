@@ -70,26 +70,9 @@ chvt 1
 %post --logfile /root/install-post.log
 (
 
-
-ChefServer='Chefserver.localdomain'
-ChefServerFlat="`echo ${ChefServer}|sed 's/\./_/g'`"
-
-# Install Chef
-yum -y --disablerepo=* install http://repo/repo/os/Linux/Software/Chef/chef-12.0.1-1.x86_64.rpm
-
-# Get all the relevent chef config files
-mkdir -p /etc/chef
-cd /etc/chef/
-wget -q http://repo/build/chef/client.rb
-wget -q http://repo/build/chef/validation.pem
-wget -q http://repo/build/chef/initial.json
-
-# Download the SSL certs
-mkdir -p /etc/chef/trusted_certs
-openssl s_client -showcerts -connect ${ChefServer}:443 </dev/null 2>/dev/null|openssl x509 -outform PEM > /etc/chef/trusted_certs/${ChefServerFlat}.crt
-
-# Run the inital chef client
-chef-client -j /etc/chef/initial.json --environment _default
+wget http://repo/build/kickstarts/scripts/setup-chef.sh -O /root/setup-chef.sh
+chmod +x /root/setup-chef.sh
+/root/setup-chef.sh
 
 ) 2>&1 >/root/install-post-sh.log
 %end
