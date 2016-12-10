@@ -66,10 +66,4 @@ chvt 1
 ###############################################################################
 %end
 
-### POST-INSTALL ###
-%post --logfile /root/install-post.log
-(
-
-) 2>&1 >/root/install-post-sh.log
-%end
 ### EOF ###
