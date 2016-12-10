@@ -70,11 +70,6 @@ chvt 1
 %post --logfile /root/install-post.log
 (
 
-# Setup SSH key
-mkdir /root/.ssh
-echo 'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAxiaxYdjTN+A3Zus5iFtbtkKWBh8iaxNK9Pfhg1L1PevcJmqjhSNnVSVv07BeNtRCq5l6EyULboVFC0hfn2ek+VcbxITOgfa/otzLw3Qyza2/vZRYxUhGOTlLGteDC+V+1m9NXD0IH/VE0XEpabZ97C4VJDXK+Pclkhv4cn/wEP8BADh2W5sg+UwUghS7WqCoSkCycq2iJwWujW/xZ+AslHVFqeKrEKWklh2zkJzs0DW7b1yiLhzH8a3TBAEbGuk6dBUXMnKj9ksdgDnA5QScC8lDXLxBr3p3yU8UVUzbJz0EFoJvsHsYq7k25J269nN0+xZEn7y/u9OduTZADfOqIw== SBT' >> /root/.ssh/authorized_keys
-chmod -R 700 /root/.ssh
-
 ) 2>&1 >/root/install-post-sh.log
 %end
 ### EOF ###
