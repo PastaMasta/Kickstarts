@@ -4,7 +4,7 @@ ChefServer='chef.localdomain'
 ChefServerFlat="`echo ${ChefServer}|sed 's/\./_/g'`"
 
 # Install Chef
-yum -y --disablerepo=* install http://repo/software/Chef/chef-12.0.1-1.x86_64.rpm
+yum -y install http://repo/software/Chef/chef-12.0.1-1.x86_64.rpm
 
 # Get all the relevent chef config files
 mkdir -p /etc/chef
