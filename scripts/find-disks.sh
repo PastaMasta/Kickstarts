@@ -32,7 +32,7 @@ if [[ `echo ${devs}|wc -w` -gt 1 ]] ; then
     case ${reply1} in
       [Yy]* )
         echo "clearpart --all --drives=/dev/${rootdisk}" >> /tmp/part-include
-        echo "part /boot --fstype=ext4 --size=128 --ondisk=/dev/${rootdisk}" >> /tmp/part-include
+        echo "part /boot --fstype=ext4 --size=512 --ondisk=/dev/${rootdisk}" >> /tmp/part-include
         echo "part pv.0 --grow --size=1 --ondisk=/dev/${rootdisk}" >> /tmp/part-include
         echo "bootloader --location=mbr --driveorder=/dev/${rootdisk} --append='crashkernel=auth rhgb rhgb quiet'" >> /tmp/part-include
         break ;;
@@ -43,7 +43,7 @@ if [[ `echo ${devs}|wc -w` -gt 1 ]] ; then
 
 else
   echo "clearpart --all --drives=/dev/${devs}" >> /tmp/part-include
-  echo "part /boot --fstype=ext4 --size=128 --ondisk=/dev/${devs}" >> /tmp/part-include
+  echo "part /boot --fstype=ext4 --size=512 --ondisk=/dev/${devs}" >> /tmp/part-include
   echo "part pv.0 --grow --size=1 --ondisk=/dev/${devs}" >> /tmp/part-include
   echo "bootloader --location=mbr --driveorder=/dev/${devs}--append='crashkernel=auth rhgb rhgb quiet'" >> /tmp/part-include
 fi
