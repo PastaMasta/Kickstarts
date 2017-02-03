@@ -26,11 +26,10 @@ timezone --utc Europe/London
 
 volgroup rootvg --pesize=4096 pv.0
 logvol swap --name=lv_swap --vgname=rootvg --size=2048
-logvol / --fstype=ext4 --name=lv_root --vgname=rootvg --size=2048
+logvol / --fstype=ext4 --name=lv_root --vgname=rootvg --size=4098
 logvol /tmp --fstype=ext4 --name=lv_tmp --vgname=rootvg --size=1024
 logvol /home --fstype=ext4 --name=lv_home --vgname=rootvg --size=128
 logvol /var --fstype=ext4 --name=lv_var --vgname=rootvg --size=1024
-logvol /var/log --fstype=ext4 --name=lv_log --vgname=rootvg --size=1024
 
 ### PACKAGES ###
 %packages
