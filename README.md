@@ -12,11 +12,14 @@ Current builds are:
 
 Intended to be used with the chef-master cookbook.
 
+Helper scripts
+--------------
+
 Most of the helper scripts are interactive allowing for a mostly-automated build.
 
-set-hostname.sh will ask for a hostname and update the relevent files.
-find-disks.sh Will confirm the disk for rootvg if there is more than one detected.
-setup-chef.sh Installs chef-client and bootstraps.
+* [```set-hostname.sh```](scripts/set-hostname.sh) will ask for a hostname and update the relevent files.
+* [```find-disks.sh```](scripts/find-disks.sh) Will confirm the disk for rootvg if there is more than one detected.
+* [```setup-chef.sh```](scripts/setup-chef.sh) Installs chef-client and bootstraps.
 
 License and Authors
 -------------------
